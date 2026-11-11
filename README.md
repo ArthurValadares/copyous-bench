@@ -8,17 +8,24 @@ The harness is **branch-independent**: it lives outside the checkout it tests, c
 
 - Linux with GNOME Shell and `gnome-shell-test-tool`
 - Node.js and pnpm (the same versions the extension expects)
-- Python 3.11+
-- `uv` (optional, used to run `analyze.py` with `matplotlib`/`numpy`)
+- [`uv`](https://docs.astral.sh/uv/) — Python 3.13 is resolved automatically
 - A Copyous checkout with `node_modules` and `submodules/gnome-shell` already set up
 
-`analyze.py` needs `matplotlib` and `numpy`; install them with `pip install -r requirements.txt` or let the orchestrator use `uv run --with`.
+The harness is managed entirely by `uv`. `uv sync` creates `.venv` and installs
+the runtime dependencies (`matplotlib`, `numpy`) declared in `pyproject.toml`
+and pinned in `uv.lock`.
 
 ## Layout
 
 ```
-copyous-bench/          this repository
-copyous/                the extension checkout to benchmark
+copyous-bench/              this repository
+├── pyproject.toml          uv project, dependencies and tool config
+├── uv.lock                 resolved dependency lockfile
+├── src/copyous_bench/      the Python package
+├── automation/             in-shell measurement script (bench.js)
+├── fixtures/               highlight.js asset builder
+└── wrap/                   GNOME Shell test wrapper and settings
+copyous/                    the extension checkout to benchmark
 ```
 
 The default `--repo` is `../copyous` relative to this repository. You can override it with `--repo` or `COPYOUS_REPO`.
@@ -26,8 +33,11 @@ The default `--repo` is `../copyous` relative to this repository. You can overri
 ## Quick start
 
 ```sh
+# Install the harness and its dependencies into .venv
+uv sync
+
 # Run the full matrix (fresh GNOME Shell per sample)
-python3 orchestrator.py \
+uv run copyous-bench \
   --branches main \
              feat/clipboard-item-placeholders \
              feat/lazy-clipboard-items \
@@ -36,9 +46,12 @@ python3 orchestrator.py \
   --sizes 50 200 500
 
 # Rebuild the database, CSV, Markdown and plots from raw runs
-python3 ingest.py
-python3 analyze.py
+uv run copyous-bench-ingest
+uv run copyous-bench-analyze
 ```
+
+The package also exposes `python -m copyous_bench.orchestrator`,
+`copyous_bench.ingest`, `copyous_bench.analyze` and `copyous_bench.dataset`.
 
 Outputs go to `./results/` by default (`results.db`, `summary.md`, `summary.csv`, `plots/*.png`). The directory is git-ignored; attach or publish it separately.
 
@@ -66,18 +79,36 @@ Outputs go to `./results/` by default (`results.db`, `summary.md`, `summary.csv`
 3. The extension is built once per branch with identical flags.
 4. `gnome-shell-test-tool` runs in a private D-Bus session, one fresh shell per sample, with the benchmark settings in `wrap/settings.ini`.
 5. Raw sidecars, reports and logs are written per iteration under `--workdir`.
-6. `ingest.py` rebuilds `results.db` from the raw artifacts; `analyze.py` regenerates the CSV, Markdown and plots.
+6. `copyous_bench.ingest` rebuilds `results.db` from the raw artifacts; `copyous_bench.analyze` regenerates the CSV, Markdown and plots.
 
 The default benchmark uses a horizontal, fixed-size layout (`250 x 170`), with link preview images disabled. Image entries and dynamic-height vertical are not covered by default.
 
 ## Files
 
-- `orchestrator.py` — matrix runner, worktrees, builds, shell launches
-- `ingest.py` — raw artifacts to SQLite
-- `analyze.py` — SQLite to CSV, Markdown and plots
+- `src/copyous_bench/orchestrator.py` — matrix runner, worktrees, builds, shell launches
+- `src/copyous_bench/ingest.py` — raw artifacts to SQLite
+- `src/copyous_bench/analyze.py` — SQLite to CSV, Markdown and plots
+- `src/copyous_bench/dataset.py` — deterministic dataset generator
+- `src/copyous_bench/paths.py` — shared repository paths
 - `automation/bench.js` — in-shell measurement script
-- `fixtures/` — deterministic dataset generator and highlight.js assets
+- `fixtures/build_hljs.sh` — highlight.js asset builder
 - `wrap/` — GNOME Shell test wrapper and benchmark settings
+
+## Development
+
+Quality tooling is wired through `pre-commit` and configured in `pyproject.toml`:
+
+```sh
+uv sync                       # create .venv from uv.lock
+uv run pre-commit install     # install the Git hooks
+uv run pre-commit run --all-files
+```
+
+- **ruff** — linting (`E`, `F`, `W`, `I`, `UP`, `B`, `C4`, `SIM`, `RUF`) and formatting.
+- **mypy** — static typing, run against `src/` inside the `uv` environment.
+- **pre-commit-hooks** — trailing whitespace, end-of-file, YAML/TOML, large files, merge conflicts.
+
+Run the tools directly with `uv run ruff check --fix .`, `uv run ruff format .` and `uv run mypy`.
 
 ## License
 
