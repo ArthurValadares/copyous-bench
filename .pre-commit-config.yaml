@@ -34,3 +34,11 @@ repos:
         types: [python]
         pass_filenames: false
         require_serial: true
+
+      # Enforce the Conventional Commits format on every commit message.
+      # Install with: uv run pre-commit install --hook-type commit-msg
+      - id: commitizen
+        name: commitizen
+        entry: uv run --frozen cz check --commit-msg-file
+        language: system
+        stages: [commit-msg]

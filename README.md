@@ -100,15 +100,30 @@ Quality tooling is wired through `pre-commit` and configured in `pyproject.toml`
 
 ```sh
 uv sync                       # create .venv from uv.lock
-uv run pre-commit install     # install the Git hooks
+uv run pre-commit install --hook-type pre-commit --hook-type commit-msg
 uv run pre-commit run --all-files
+uv run pytest
 ```
 
 - **ruff** — linting (`E`, `F`, `W`, `I`, `UP`, `B`, `C4`, `SIM`, `RUF`) and formatting.
 - **mypy** — static typing, run against `src/` inside the `uv` environment.
+- **pytest** — unit tests under `tests/`.
 - **pre-commit-hooks** — trailing whitespace, end-of-file, YAML/TOML, large files, merge conflicts.
 
-Run the tools directly with `uv run ruff check --fix .`, `uv run ruff format .` and `uv run mypy`.
+Run the tools directly with `uv run ruff check --fix .`, `uv run ruff format .`,
+`uv run mypy` and `uv run pytest`.
+
+### Commit messages
+
+This repository follows [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+<type>(<optional scope>): <subject>
+```
+
+Use `uv run cz commit` for a guided prompt, or `uv run cz check --rev-range
+origin/main..HEAD` to validate a range. The `commit-msg` hook rejects messages
+that do not match the convention.
 
 ## License
 
