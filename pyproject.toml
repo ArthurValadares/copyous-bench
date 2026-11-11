@@ -74,6 +74,26 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = [
+	"--cov=copyous_bench",
+	"--cov-report=term-missing",
+	"--cov-report=xml",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["copyous_bench"]
+omit = ["*/__main__.py"]
+
+[tool.coverage.report]
+fail_under = 40
+show_missing = true
+skip_covered = true
+exclude_lines = [
+	"if TYPE_CHECKING:",
+	"if __name__ == .__main__.:",
+	"raise NotImplementedError",
+]
 
 [tool.commitizen]
 name = "cz_conventional_commits"
