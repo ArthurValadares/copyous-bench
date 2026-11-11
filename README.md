@@ -111,10 +111,14 @@ uv run pytest
 - **ruff** — linting (`E`, `F`, `W`, `I`, `UP`, `B`, `C4`, `SIM`, `RUF`) and formatting.
 - **mypy** — static typing, run against `src/` inside the `uv` environment.
 - **pytest** — unit tests under `tests/`.
+- **pytest-cov** — branch coverage over `src/copyous_bench`, gated by
+  `[tool.coverage.report].fail_under` in `pyproject.toml`. `uv run pytest` fails
+  when coverage drops below the threshold and writes `coverage.xml` for CI.
 - **pre-commit-hooks** — trailing whitespace, end-of-file, YAML/TOML, large files, merge conflicts.
 
 Run the tools directly with `uv run ruff check --fix .`, `uv run ruff format .`,
-`uv run mypy` and `uv run pytest`.
+`uv run mypy` and `uv run pytest`. For a browsable coverage report, run
+`uv run pytest --cov-report=html` and open `htmlcov/index.html`.
 
 ### Commit messages
 
