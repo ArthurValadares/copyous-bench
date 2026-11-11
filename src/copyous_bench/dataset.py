@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Generate deterministic clipboard-history databases for the benchmark.
 
 The databases use the same schema as ``resources/database/database.sql``
@@ -14,14 +13,16 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import random
 import sqlite3
 from collections import Counter
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from typing import Any
+
+from .paths import PROJECT_ROOT
 
 SEED = 20261108
-BASE_TIME = datetime(2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
+BASE_TIME = datetime(2026, 1, 1, 12, 0, 0, tzinfo=UTC)
 MASTER_SIZE = 500
 TOKEN = "benchmark"
 NO_MATCH_TOKEN = "zzzznomatch"
@@ -198,14 +199,13 @@ def build_master() -> list[dict]:
     order = stable_order(SEED, MASTER_SIZE)
     types = [types[i] for i in order]
 
-    rng = random.Random(SEED)
     entries: list[dict] = []
     language_index = 0
     character_index = 0
 
     for i, item_type in enumerate(types):
         token = i % 7 == 3
-        metadata = None
+        metadata: dict[str, Any] | None = None
         title = None
 
         if item_type == "Text":
@@ -226,9 +226,7 @@ def build_master() -> list[dict]:
             content = f"https://example.com/{slug}/{i:04d}"
             metadata = {
                 "title": f"{'Benchmark' if token else 'Article'} notes {i:04d}",
-                "description": (
-                    f"A short description for link {i:04d} used by the clipboard dataset."
-                ),
+                "description": (f"A short description for link {i:04d} used by the clipboard dataset."),
                 "image": None,
             }
         elif item_type == "Color":
@@ -317,7 +315,7 @@ def sha256(path: Path) -> str:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--out-dir", type=Path, default=Path(__file__).resolve().parent.parent / "results" / "datasets")
+    parser.add_argument("--out-dir", type=Path, default=PROJECT_ROOT / "results" / "datasets")
     parser.add_argument("--sizes", type=int, nargs="+", default=[50, 200, 500])
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
@@ -325,7 +323,7 @@ def main() -> int:
     args.out_dir.mkdir(parents=True, exist_ok=True)
     master = build_master()
 
-    manifest = {
+    manifest: dict[str, Any] = {
         "seed": SEED,
         "base_time": BASE_TIME.isoformat(),
         "token": TOKEN,
@@ -347,8 +345,7 @@ def main() -> int:
         token_matches = sum(
             1
             for entry in entries
-            if TOKEN in entry["content"].lower()
-            or (entry["title"] and TOKEN in entry["title"].lower())
+            if TOKEN in entry["content"].lower() or (entry["title"] and TOKEN in entry["title"].lower())
         )
         manifest["sizes"][str(size)] = {
             "path": str(path.resolve()),
