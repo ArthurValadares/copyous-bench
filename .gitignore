@@ -5,3 +5,11 @@ venv/
 results/
 *.db
 .DS_Store
+
+# Tooling caches and build artifacts
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+build/
+dist/
+*.egg-info/

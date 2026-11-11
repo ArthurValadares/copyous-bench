@@ -1,0 +1,70 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "copyous-bench"
+version = "0.1.0"
+description = "Reproducible performance harness for the Copyous GNOME Shell extension"
+readme = "README.md"
+requires-python = ">=3.13"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+keywords = ["benchmark", "clipboard", "copyous", "gnome-shell"]
+classifiers = [
+	"Development Status :: 4 - Beta",
+	"Environment :: Console",
+	"Intended Audience :: Developers",
+	"Operating System :: POSIX :: Linux",
+	"Programming Language :: Python :: 3",
+	"Programming Language :: Python :: 3.13",
+	"Topic :: Software Development :: Testing",
+]
+dependencies = [
+	"matplotlib>=3.9",
+	"numpy>=2.0",
+]
+
+[project.scripts]
+copyous-bench = "copyous_bench.orchestrator:main"
+copyous-bench-analyze = "copyous_bench.analyze:main"
+copyous-bench-dataset = "copyous_bench.dataset:main"
+copyous-bench-ingest = "copyous_bench.ingest:main"
+
+[dependency-groups]
+dev = [
+	"mypy>=2.4",
+	"pre-commit>=4.7",
+	"ruff>=0.17",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/copyous_bench"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM", "RUF"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["copyous_bench"]
+
+[tool.mypy]
+python_version = "3.13"
+files = ["src"]
+check_untyped_defs = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+strict_equality = true
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+show_error_codes = true
+pretty = true
+
+[[tool.mypy.overrides]]
+module = ["matplotlib.*"]
+ignore_missing_imports = true
