@@ -35,6 +35,16 @@ repos:
         pass_filenames: false
         require_serial: true
 
+      # Fail commits that drop the suite below the coverage threshold configured
+      # in pyproject.toml ([tool.coverage.report].fail_under).
+      - id: pytest
+        name: pytest (coverage)
+        entry: uv run --frozen pytest
+        language: system
+        types: [python]
+        pass_filenames: false
+        require_serial: true
+
       # Enforce the Conventional Commits format on every commit message.
       # Install with: uv run pre-commit install --hook-type commit-msg
       - id: commitizen
