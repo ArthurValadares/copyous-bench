@@ -37,7 +37,7 @@ The default `--repo` is `../copyous` relative to this repository. You can overri
 uv sync
 
 # Run the full matrix (fresh GNOME Shell per sample)
-uv run copyous-bench \
+uv run copyous-bench run \
   --branches main \
              feat/clipboard-item-placeholders \
              feat/lazy-clipboard-items \
@@ -46,12 +46,12 @@ uv run copyous-bench \
   --sizes 50 200 500
 
 # Rebuild the database, CSV, Markdown and plots from raw runs
-uv run copyous-bench-ingest
-uv run copyous-bench-analyze
+uv run copyous-bench ingest
+uv run copyous-bench analyze
 ```
 
-The package also exposes `python -m copyous_bench.orchestrator`,
-`copyous_bench.ingest`, `copyous_bench.analyze` and `copyous_bench.dataset`.
+The same commands are available through `python -m copyous_bench`. Run
+`copyous-bench --help` for the full command list.
 
 Outputs go to `./results/` by default (`results.db`, `summary.md`, `summary.csv`, `plots/*.png`). The directory is git-ignored; attach or publish it separately.
 

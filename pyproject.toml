@@ -28,10 +28,7 @@ dependencies = [
 ]
 
 [project.scripts]
-copyous-bench = "copyous_bench.orchestrator:main"
-copyous-bench-analyze = "copyous_bench.analyze:main"
-copyous-bench-dataset = "copyous_bench.dataset:main"
-copyous-bench-ingest = "copyous_bench.ingest:main"
+copyous-bench = "copyous_bench.cli:main"
 
 [dependency-groups]
 dev = [
