@@ -12,8 +12,8 @@ The harness is **branch-independent**: it lives outside the checkout it tests, c
 - A Copyous checkout with `node_modules` and `submodules/gnome-shell` already set up
 
 The harness is managed entirely by `uv`. `uv sync` creates `.venv` and installs
-the runtime dependencies (`matplotlib`, `numpy`) declared in `pyproject.toml`
-and pinned in `uv.lock`.
+the runtime dependencies (`click`, `matplotlib`, `numpy`, `pandas`) declared in
+`pyproject.toml` and pinned in `uv.lock`.
 
 ## Layout
 
@@ -85,10 +85,13 @@ The default benchmark uses a horizontal, fixed-size layout (`250 x 170`), with l
 
 ## Files
 
-- `src/copyous_bench/orchestrator.py` — matrix runner, worktrees, builds, shell launches
-- `src/copyous_bench/ingest.py` — raw artifacts to SQLite
-- `src/copyous_bench/analyze.py` — SQLite to CSV, Markdown and plots
-- `src/copyous_bench/dataset.py` — deterministic dataset generator
+- `src/copyous_bench/cli.py` — unified `copyous-bench {run,dataset,ingest,analyze}` CLI
+- `src/copyous_bench/orchestration/` — matrix runner, worktrees, builds, shell launches
+- `src/copyous_bench/ingest/` — raw artifacts to SQLite
+- `src/copyous_bench/analyze/` — SQLite to CSV, Markdown and plots
+- `src/copyous_bench/dataset/` — deterministic dataset generator
+- `src/copyous_bench/config.py` — defaults and environment overrides
+- `src/copyous_bench/branches.py` — branch catalogue and ordering
 - `src/copyous_bench/paths.py` — shared repository paths
 - `automation/bench.js` — in-shell measurement script
 - `fixtures/build_hljs.sh` — highlight.js asset builder
