@@ -37,6 +37,7 @@ dev = [
 	"pandas-stubs>=3.1.0.261029",
 	"pre-commit>=4.7",
 	"pytest>=9.2.0",
+	"pytest-cov>=7.1.0",
 	"ruff>=0.17",
 ]
 
