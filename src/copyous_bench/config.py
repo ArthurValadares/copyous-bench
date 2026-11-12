@@ -15,8 +15,8 @@ CORE_SIZE = 500
 
 
 def default_repo() -> Path:
-    # Development checkouts live next to the ``copyous`` repository by default.
-    fallback = Path(__file__).resolve().parents[3].parent / "copyous"
+    # Development checkouts live next to the ``copyous-bench`` checkout.
+    fallback = Path("../copyous")
     return Path(os.environ.get("COPYOUS_REPO", fallback)).expanduser()
 
 

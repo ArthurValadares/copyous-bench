@@ -26,7 +26,7 @@ def test_branches():
 def test_config_defaults_and_overrides(monkeypatch, tmp_path):
     for name in ("COPYOUS_REPO", "COPYOUS_BENCH_WORKDIR", "COPYOUS_BENCH_RESULTS"):
         monkeypatch.delenv(name, raising=False)
-    assert config.default_repo().name == "copyous"
+    assert config.default_repo() == Path("../copyous")
     assert config.default_workdir().name == "copyous-bench"
     assert config.default_results().name == "results"
 
