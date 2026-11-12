@@ -18,9 +18,9 @@ from .toolchain import Toolchain
 TEST_TOOL = "/usr/bin/gnome-shell-test-tool"
 
 
-def collect_thermal() -> list[dict[str, Any]]:
+def collect_thermal(root: Path = Path("/sys/class/thermal")) -> list[dict[str, Any]]:
     zones: list[dict[str, Any]] = []
-    for zone in sorted(Path("/sys/class/thermal").glob("thermal_zone*")):
+    for zone in sorted(root.glob("thermal_zone*")):
         temp_path = zone / "temp"
         if not temp_path.exists():
             continue
@@ -32,17 +32,17 @@ def collect_thermal() -> list[dict[str, Any]]:
     return zones
 
 
-def collect_governors() -> dict[str, str]:
+def collect_governors(root: Path = Path("/sys/devices/system/cpu")) -> dict[str, str]:
     governors: dict[str, str] = {}
-    for cpu in sorted(Path("/sys/devices/system/cpu").glob("cpu[0-9]*")):
+    for cpu in sorted(root.glob("cpu[0-9]*")):
         path = cpu / "cpufreq/scaling_governor"
         if path.exists():
             governors[cpu.name] = read_text(path).strip()
     return governors
 
 
-def cpu_model() -> str:
-    for line in read_text(Path("/proc/cpuinfo")).splitlines():
+def cpu_model(cpuinfo: Path = Path("/proc/cpuinfo")) -> str:
+    for line in read_text(cpuinfo).splitlines():
         if line.lower().startswith("model name"):
             return line.split(":", 1)[1].strip()
     return platform.processor() or "unknown"

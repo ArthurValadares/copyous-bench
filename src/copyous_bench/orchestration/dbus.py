@@ -35,8 +35,8 @@ def _host_runtime() -> DbusRuntime | None:
     return DbusRuntime("host", run_session, daemon, str(Path(run_session).parent))
 
 
-def _newest_flatpak_session() -> Path:
-    candidates = [path for pattern in FLATPAK_PATTERNS for path in Path("/").glob(pattern) if path.exists()]
+def _newest_flatpak_session(root: Path = Path("/")) -> Path:
+    candidates = [path for pattern in FLATPAK_PATTERNS for path in root.glob(pattern) if path.exists()]
     if not candidates:
         raise RuntimeError("Could not find dbus-run-session on the host or in a Flatpak runtime")
 
