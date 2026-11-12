@@ -158,6 +158,7 @@ def hljs_script(tmp_path, monkeypatch):
     script.write_text(
         "#!/bin/bash\nset -e\n"
         'mkdir -p "$(dirname "$2")" "$2/languages"\n'
+        'echo "$1" >> "$(dirname "$2")/repo.log"\n'
         'echo run >> "$(dirname "$2")/runs.log"\n'
         '[ -n "$HLJS_BROKEN" ] && exit 0\n'
         'touch "$2/highlight.min.js"\n'
@@ -176,6 +177,7 @@ def test_ensure_hljs_builds_once_unless_forced(tmp_path, hljs_script):
     assert runs.read_text().count("run") == 1
     assets.ensure_hljs(repo, tmp_path / "work", force=True)
     assert runs.read_text().count("run") == 2
+    assert (tmp_path / "work" / "assets" / "repo.log").read_text().splitlines() == [str(repo)] * 2
 
 
 def test_ensure_hljs_detects_incomplete_assets(tmp_path, hljs_script, monkeypatch):
