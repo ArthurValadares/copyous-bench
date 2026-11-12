@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "copyous-bench"
-version = "0.1.2"
+version = "0.1.3"
 description = "Reproducible performance harness for the Copyous GNOME Shell extension"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -97,7 +97,7 @@ exclude_lines = [
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.1.2"
+version = "0.1.3"
 version_files = [
     "pyproject.toml:^version",
     "src/copyous_bench/__init__.py:__version__",

@@ -25,6 +25,12 @@
 - **core**: extract shared config, branches and utilities
 - move harness modules into src/copyous_bench package
 
+## v0.1.3 (2026-11-12)
+
+### Fix
+
+- default value for `--repo`
+
 ## v0.1.2 (2026-11-12)
 
 ### Fix
