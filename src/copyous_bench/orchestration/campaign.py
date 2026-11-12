@@ -151,7 +151,7 @@ class Campaign:
             print(f"== {label} ==")
             try:
                 step()
-            except Exception as error:  # post-processing can be replayed from the raw runs
+            except (Exception, SystemExit) as error:  # analyze exits when nothing succeeded; replay from raw runs
                 print(f"{label.lower()} failed: {error}")
 
     def run(self) -> int:
