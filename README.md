@@ -28,7 +28,7 @@ copyous-bench/              this repository
 copyous/                    the extension checkout to benchmark
 ```
 
-The default `--repo` is `../copyous` relative to this repository. You can override it with `--repo` or `COPYOUS_REPO`.
+The default `--repo` is `../copyous` relative to the directory you run it from. You can override it with `--repo` or `COPYOUS_REPO`.
 
 ## Quick start
 
@@ -36,14 +36,19 @@ The default `--repo` is `../copyous` relative to this repository. You can overri
 # Install the harness and its dependencies into .venv
 uv sync
 
-# Run the full matrix (fresh GNOME Shell per sample)
+# Run the full matrix (fresh GNOME Shell per sample). The five benchmark
+# branches and sizes 50/200/500 are the defaults, so --branches/--sizes can
+# be omitted.
+uv run copyous-bench run
+
+# To select them explicitly, repeat each option once per value.
 uv run copyous-bench run \
   --branches main \
-             feat/clipboard-item-placeholders \
-             feat/lazy-clipboard-items \
-             perf/cheaper-cached-async-items \
-             merge/clipboard-item-placeholders-cached-async-items \
-  --sizes 50 200 500
+  --branches feat/clipboard-item-placeholders \
+  --branches feat/lazy-clipboard-items \
+  --branches perf/cheaper-cached-async-items \
+  --branches merge/clipboard-item-placeholders-cached-async-items \
+  --sizes 50 --sizes 200 --sizes 500
 
 # Rebuild the database, CSV, Markdown and plots from raw runs
 uv run copyous-bench ingest
@@ -63,7 +68,7 @@ Outputs go to `./results/` by default (`results.db`, `summary.md`, `summary.csv`
 | `--workdir` | `$COPYOUS_BENCH_WORKDIR` or `<tmp>/copyous-bench` | Worktrees and raw runs |
 | `--results-dir` | `$COPYOUS_BENCH_RESULTS` or `./results` | Database, summaries and plots |
 | `--branches` | the five benchmark branches | Branches to test |
-| `--sizes` | `50 200 500` | Dataset sizes (must include 500) |
+| `--sizes` | `50, 200, 500` | Dataset sizes (must include 500) |
 | `--core-samples` | `6` | Samples for the core matrix |
 | `--scaling-samples` | `4` | Samples for the scaling matrix |
 | `--no-post` | off | Skip ingest/analyze after the run |
