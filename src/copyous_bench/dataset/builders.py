@@ -28,7 +28,8 @@ class EntryBuilder(ABC):
         self.token = token
 
     @abstractmethod
-    def build(self, index: int, has_token: bool) -> BuiltContent: ...
+    def build(self, index: int, has_token: bool) -> BuiltContent:  # pragma: no cover
+        ...
 
 
 class TextBuilder(EntryBuilder):

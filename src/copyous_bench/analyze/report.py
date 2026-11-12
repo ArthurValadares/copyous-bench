@@ -40,7 +40,8 @@ class ReportContext:
 
 class Section(ABC):
     @abstractmethod
-    def render(self, ctx: ReportContext) -> list[str]: ...
+    def render(self, ctx: ReportContext) -> list[str]:  # pragma: no cover
+        ...
 
 
 class EnvironmentSection(Section):

@@ -20,7 +20,7 @@ class Plot(ABC):
     name: str
 
     @abstractmethod
-    def render(self, samples: pd.DataFrame) -> Any | None:
+    def render(self, samples: pd.DataFrame) -> Any | None:  # pragma: no cover
         """Return a matplotlib ``Figure`` or ``None`` when there is nothing to draw."""
 
 
