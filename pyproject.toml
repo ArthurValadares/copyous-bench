@@ -86,7 +86,7 @@ source = ["copyous_bench"]
 omit = ["*/__main__.py"]
 
 [tool.coverage.report]
-fail_under = 40
+fail_under = 95
 show_missing = true
 skip_covered = true
 exclude_lines = [
