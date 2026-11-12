@@ -98,8 +98,10 @@ def ensure_datasets(out_dir: Path, sizes: Sequence[int], *, force: bool = False)
     manifest_path = out_dir / "datasets.json"
     if not force and manifest_path.exists():
         manifest = json_load(manifest_path)
-        sizes_manifest = manifest.get("sizes", {})
-        if all(str(size) in sizes_manifest and Path(sizes_manifest[str(size)]["path"]).exists() for size in sizes):
+        if all(
+            str(size) in manifest.get("sizes", {}) and Path(manifest["sizes"][str(size)]["path"]).exists()
+            for size in sizes
+        ):
             return manifest
     manifest, _ = generate_datasets(out_dir, sizes, force=force)
     return manifest

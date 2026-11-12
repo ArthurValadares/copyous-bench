@@ -153,8 +153,9 @@ class ResultsDatabase:
 
     def _insert_checkpoints(self, run_id: str, checkpoints: list[dict[str, Any]]) -> None:
         columns = ("run_id", *schema.CHECKPOINT_COLUMNS)
-        rows = [(run_id, *(item.get(c) for c in schema.CHECKPOINT_COLUMNS)) for item in checkpoints]
-        self._insert("checkpoint", columns, rows)
+        self._insert(
+            "checkpoint", columns, [(run_id, *(item.get(c) for c in schema.CHECKPOINT_COLUMNS)) for item in checkpoints]
+        )
 
     def _insert_frames(self, run_id: str, phases: dict[str, Any]) -> None:
         frame_rows: list[tuple[Any, ...]] = []
