@@ -147,15 +147,6 @@ uv run cz bump --changelog
 git push origin main --follow-tags
 ```
 
-For the very first release there is no previous tag for Commitizen to compare
-against, so create the initial tag manually (it already matches the version in
-`pyproject.toml`):
-
-```sh
-git tag v0.1.0
-git push origin v0.1.0
-```
-
 The workflow refuses to publish when the tag does not match the version in
 `pyproject.toml` and the `__version__` in `src/copyous_bench/__init__.py`, so
 always bump through Commitizen instead of tagging by hand.
