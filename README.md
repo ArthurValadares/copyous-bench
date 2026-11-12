@@ -132,6 +132,43 @@ Use `uv run cz commit` for a guided prompt, or `uv run cz check --rev-range
 origin/main..HEAD` to validate a range. The `commit-msg` hook rejects messages
 that do not match the convention.
 
+### Releases
+
+Releases are tag-driven and automated in `.github/workflows/release.yml`.
+Pushing a tag that matches `v*` runs the checks, builds the wheel and the
+source archives, generates the release notes from the conventional commits
+since the previous tag with Commitizen, and publishes a GitHub release.
+
+```sh
+# Bump the version, update CHANGELOG.md and create the release commit and tag
+uv run cz bump --changelog
+
+# Publish the commit and the tag
+git push origin main --follow-tags
+```
+
+For the very first release there is no previous tag for Commitizen to compare
+against, so create the initial tag manually (it already matches the version in
+`pyproject.toml`):
+
+```sh
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+The workflow refuses to publish when the tag does not match the version in
+`pyproject.toml` and the `__version__` in `src/copyous_bench/__init__.py`, so
+always bump through Commitizen instead of tagging by hand.
+
+Each release contains:
+
+- `copyous_bench-X.Y.Z-py3-none-any.whl` — installable wheel
+- `copyous_bench-X.Y.Z.tar.gz` — source distribution
+- `copyous-bench-X.Y.Z.zip` — source archive built with `git archive`
+- `SHA256SUMS` — checksums for every asset
+
+Prerelease versions such as `v0.2.0rc1` are published as GitHub pre-releases.
+
 ## License
 
 GPL-3.0, same as Copyous. See `LICENSE`.
