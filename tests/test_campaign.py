@@ -20,7 +20,7 @@ def options(tmp_path, monkeypatch, git_repo, fake_session, fake_make):
     (wrap / "settings.ini").write_text("[s]\n")
     runtime = DbusRuntime("host", str(fake_session), "dbus-daemon", str(fake_session.parent))
     monkeypatch.setattr(campaign, "WRAP_DIR", wrap)
-    monkeypatch.setattr(campaign, "ensure_hljs", lambda workdir, force=False: workdir / "assets" / "hljs")
+    monkeypatch.setattr(campaign, "ensure_hljs", lambda repo, workdir, force=False: workdir / "assets" / "hljs")
     monkeypatch.setattr(campaign, "discover_dbus_runtime", lambda workdir, override=None: runtime)
 
     def make(**overrides):

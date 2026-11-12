@@ -157,34 +157,35 @@ def hljs_script(tmp_path, monkeypatch):
     script = fixtures / "build_hljs.sh"
     script.write_text(
         "#!/bin/bash\nset -e\n"
-        'mkdir -p "$(dirname "$1")" "$1/languages"\n'
-        'echo run >> "$(dirname "$1")/runs.log"\n'
+        'mkdir -p "$(dirname "$2")" "$2/languages"\n'
+        'echo run >> "$(dirname "$2")/runs.log"\n'
         '[ -n "$HLJS_BROKEN" ] && exit 0\n'
-        'touch "$1/highlight.min.js"\n'
-        'for l in typescript python rust json bash; do touch "$1/languages/$l.min.js"; done\n'
+        'touch "$2/highlight.min.js"\n'
+        'for l in typescript python rust json bash; do touch "$2/languages/$l.min.js"; done\n'
     )
     monkeypatch.setattr(assets, "FIXTURES_DIR", fixtures)
     return script
 
 
 def test_ensure_hljs_builds_once_unless_forced(tmp_path, hljs_script):
-    out = assets.ensure_hljs(tmp_path / "work")
+    repo = tmp_path / "repo"
+    out = assets.ensure_hljs(repo, tmp_path / "work")
     assert out == tmp_path / "work" / "assets" / "hljs"
     runs = tmp_path / "work" / "assets" / "runs.log"
-    assets.ensure_hljs(tmp_path / "work")
+    assets.ensure_hljs(repo, tmp_path / "work")
     assert runs.read_text().count("run") == 1
-    assets.ensure_hljs(tmp_path / "work", force=True)
+    assets.ensure_hljs(repo, tmp_path / "work", force=True)
     assert runs.read_text().count("run") == 2
 
 
 def test_ensure_hljs_detects_incomplete_assets(tmp_path, hljs_script, monkeypatch):
     monkeypatch.setenv("HLJS_BROKEN", "1")
     with pytest.raises(RuntimeError, match="incomplete"):
-        assets.ensure_hljs(tmp_path / "work")
+        assets.ensure_hljs(tmp_path / "repo", tmp_path / "work")
 
 
 def test_ensure_hljs_propagates_script_failures(tmp_path, hljs_script):
     hljs_script.write_text("#!/bin/bash\nexit 7\n")
     hljs_script.chmod(0o755)
     with pytest.raises(CommandError):
-        assets.ensure_hljs(tmp_path / "work")
+        assets.ensure_hljs(tmp_path / "repo", tmp_path / "work")

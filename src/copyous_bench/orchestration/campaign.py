@@ -186,7 +186,7 @@ class Campaign:
             datasets_future = pool.submit(
                 ensure_datasets, self.workdir / "datasets", o.sizes, force=o.regenerate_datasets
             )
-            hljs_future = pool.submit(ensure_hljs, self.workdir, force=o.rebuild_hljs)
+            hljs_future = pool.submit(ensure_hljs, self.repo, self.workdir, force=o.rebuild_hljs)
             build_future = pool.submit(self._prepare_extensions)
             datasets = datasets_future.result()
             print(f"highlight.js: {hljs_future.result()}")
