@@ -21,10 +21,10 @@ the runtime dependencies (`click`, `matplotlib`, `numpy`, `pandas`) declared in
 copyous-bench/              this repository
 ├── pyproject.toml          uv project, dependencies and tool config
 ├── uv.lock                 resolved dependency lockfile
-├── src/copyous_bench/      the Python package
-├── automation/             in-shell measurement script (bench.js)
-├── fixtures/               highlight.js asset builder
-└── wrap/                   GNOME Shell test wrapper and settings
+└── src/copyous_bench/      the Python package
+    ├── automation/         in-shell measurement script (bench.js)
+    ├── fixtures/           highlight.js asset builder
+    └── wrap/               GNOME Shell test wrapper and settings
 copyous/                    the extension checkout to benchmark
 ```
 
@@ -77,7 +77,7 @@ Outputs go to `./results/` by default (`results.db`, `summary.md`, `summary.csv`
 1. Each branch is checked out into a detached worktree under `--workdir`.
 2. Every worktree shares the main checkout's `node_modules` and `submodules/gnome-shell`.
 3. The extension is built once per branch with identical flags.
-4. `gnome-shell-test-tool` runs in a private D-Bus session, one fresh shell per sample, with the benchmark settings in `wrap/settings.ini`.
+4. `gnome-shell-test-tool` runs in a private D-Bus session, one fresh shell per sample, with the benchmark settings bundled in `copyous_bench/wrap/settings.ini`.
 5. Raw sidecars, reports and logs are written per iteration under `--workdir`.
 6. `copyous_bench.ingest` rebuilds `results.db` from the raw artifacts; `copyous_bench.analyze` regenerates the CSV, Markdown and plots.
 
@@ -92,10 +92,10 @@ The default benchmark uses a horizontal, fixed-size layout (`250 x 170`), with l
 - `src/copyous_bench/dataset/` — deterministic dataset generator
 - `src/copyous_bench/config.py` — defaults and environment overrides
 - `src/copyous_bench/branches.py` — branch catalogue and ordering
-- `src/copyous_bench/paths.py` — shared repository paths
-- `automation/bench.js` — in-shell measurement script
-- `fixtures/build_hljs.sh` — highlight.js asset builder
-- `wrap/` — GNOME Shell test wrapper and benchmark settings
+- `src/copyous_bench/paths.py` — shared package and asset paths
+- `src/copyous_bench/automation/bench.js` — in-shell measurement script
+- `src/copyous_bench/fixtures/build_hljs.sh` — highlight.js asset builder
+- `src/copyous_bench/wrap/` — GNOME Shell test wrapper and benchmark settings
 
 ## Development
 

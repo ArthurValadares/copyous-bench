@@ -1,3 +1,9 @@
+## 0.1.1 (2026-11-12)
+
+### Fix
+
+- **packaging**: ship harness assets inside the installed package
+
 ## 0.1.0 (2026-11-12)
 
 ### Feat

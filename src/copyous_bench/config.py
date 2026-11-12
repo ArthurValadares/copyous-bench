@@ -6,7 +6,7 @@ import os
 import tempfile
 from pathlib import Path
 
-from .paths import PROJECT_ROOT
+from .paths import DEFAULT_RESULTS
 
 EXTENSION_UUID = "copyous@boerdereinar.dev"
 DEFAULT_SEED = 20261108
@@ -15,7 +15,9 @@ CORE_SIZE = 500
 
 
 def default_repo() -> Path:
-    return Path(os.environ.get("COPYOUS_REPO", PROJECT_ROOT.parent / "copyous")).expanduser()
+    # Development checkouts live next to the ``copyous`` repository by default.
+    fallback = Path(__file__).resolve().parents[3].parent / "copyous"
+    return Path(os.environ.get("COPYOUS_REPO", fallback)).expanduser()
 
 
 def default_workdir() -> Path:
@@ -24,4 +26,4 @@ def default_workdir() -> Path:
 
 
 def default_results() -> Path:
-    return Path(os.environ.get("COPYOUS_BENCH_RESULTS", PROJECT_ROOT / "results")).expanduser()
+    return Path(os.environ.get("COPYOUS_BENCH_RESULTS", DEFAULT_RESULTS)).expanduser()
